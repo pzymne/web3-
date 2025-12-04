@@ -8,6 +8,382 @@
   对预编译的SQL语句进行缓存，省去了每次解析优化该SQL语句的过程
   防止注入攻击
   使用返回的sql.Stmt操作数据库
+2、ORM 
+对象关系映射（Object Relational Mapping，ORM）。指的是对象和关系之间的映射，使用面向对象的
+方式操作数据库。
+举例，有表student，字段为id int，name varchar，age int
+可以认为ORM是一种高级抽象，对象的操作最终还是会转换成对应关系数据库操作的SQL语句，数据库
+操作的结构会被封装成对象。
+GORM 
+GORM是一个友好的、功能全面的、性能不错的基于Go语言实现的ORM库
+模型定义 
+ GORM 倾向于约定优于配置
+约定使用名为ID的属性会作为主键
+约定使用snake_cases作为表名，结构体名使用驼峰命名
+结构体命名为employee，那么数据库表名就是employees
+约定使用snake_case作为字段名，字段采用首字母大写的大驼峰命名
+属性名为FirstName，默认对应数据库表的字段名为first_name
+如果不遵从以上约定就要自定义配置
+新增 
+ type Student struct {
+ ID       
+int        
+Name     
+string     
+// 缺省主键bigint AUTO_INCREMENT
+ `gorm:"size:48"` //`gorm:"not 
+null;type:varchar(48);comment:姓名"`
+ Age      
+byte       
+// byte=>tinyint unsigned
+ Birthday *time.Time // datetime，也可以用时间戳int64
+ Gender   
+byte       
+}
+ //`gorm:"type:tinyint"`
+ func (s *Student) String() string {
+ return fmt.Sprintf("%d: %s %d", s.ID, s.Name, s.Age)
+ }
+
+ // 新增一条
+n := time.Now()
+ s := Student{Name: "Tom", Age: 20, Birthday: &n} // 构建实例
+fmt.Println(s)
+ result := db.Create(&s) // 新增，传入指针
+fmt.Println(s) // 注意前后ID的变化
+fmt.Println(result.Error)
+ fmt.Println(result.RowsAffected)
+
+ // 新增多条
+n := time.Now()
+ s := Student{Name: "Tom", Age: 20, Birthday: &n}
+ fmt.Println(s)
+ result := db.Create([]*Student{&s, &s, &s}) // 传入指针的切片
+fmt.Println(s)
+ fmt.Println(result.Error)
+ fmt.Println(result.RowsAffected)
+查询一条 
+Take被转换为Limit 1。
+
+ var s Student
+ fmt.Println(s) // 零值
+r := db.Take(&s) // LIMIT 1
+ fmt.Println(s) // 被填充
+fmt.Println(r)
+ fmt.Println(r.Error)
+ 
+ r := db.First(&s) // ORDER BY `students`.`id` LIMIT 1
+ 
+ r := db.Last(&s) // ORDER BY `students`.`id` DESC LIMIT 1
+根据id查，可以使用下面的方式
+
+ r := db.First(&s, 15)
+
+ var s = Student{ID: 16}
+ r := db.First(&s)
+时间相关错误 
+1、时间类型字段
+上例错误如下，主要是使用了*time.Time，而不是string。
+
+ sql: Scan error on column index 3, name "birthday": unsupported Scan, storing 
+driver.Value type []uint8 into type *time.Time
+ []byte 转 *time.Time失败了
+解决方案
+在连接字符串中增加parseTime=true，这样时间类型就会自动转化为time.Time类型
+
+ dsn := "wayne:wayne@tcp(localhost:3306)/test?
+ charset=utf8mb4&parseTime=true"
+也可以
+Birthday string ，拿到Birthday字符串后，必要时，自行转换成时间类型
+2、UTC时间
+Create写入的时间，也就是说time.Now()取当前时区时间，但是存入数据库的时间是UTC时间。
+Take拿回的时间也是UTC时间，可以通过s.Birthday.Local()转成当前时区时间。
+如果想存入的时间或读取的时间直接是当前时区时间，可以使用loc参数loc=Local。
+如果loc=Local
+存入时，数据库字段中的时间就是当前时区的时间值
+读取时，数据库字段中的时间就被解读为当前时区
+千万不要存入和读取的时区不一致，例如数据库时采用Local存入，却使用UTC解读时间，会造成时间时
+区的混乱。应该保证时间存入、读取时区一致。
+一定要统一项目中数据库中时间类型字段的时区
+可以统一采用UTC，本地化显示时转换为当前时区即可
+可以统一采用时间戳
+ 
+查询所有 
+distinct 
+投影 
+投影是关系模型的操作，就是选择哪些字段。
+Limit和Offset 
+dsn := "wayne:wayne@tcp(localhost:3306)/test?
+ charset=utf8mb4&parseTime=true&loc=Local"
+ // time/zoneinfo.go
+ func LoadLocation(name string) (*Location, error) {
+    if name == "" || name == "UTC" {
+        return UTC, nil
+    }
+    if name == "Local" {
+        return Local, nil
+    }
+    ...省略
+}
+
+ var students []*Student
+ r := db.Find(&students)
+ fmt.Println(r)
+ fmt.Println(r.Error)
+ fmt.Println(students)
+
+ var students []*Student
+ r := db.Distinct("name").Find(&students) // 投影的字段是什么？
+fmt.Println(students) // 容器里每个实例是什么样子？
+
+ var students []*Student
+ r := db.Select("id", "name", "age").Find(&students)
+ r := db.Select([]string{"id", "name", "age"}).Find(&students)
+ fmt.Println(students)
+
+ var students []*Student
+ r := db.Limit(2).Offset(2).Find(&students)
+ fmt.Println(students) // 容器里每个实例是什么样子？
+
+条件查询 
+1、字符串条件
+ var students []*Student
+ r := db.Where("name = ?", "Tom").Find(&students)
+ r := db.Where("name <> ?", "Tom").Find(&students)
+ r := db.Where("name in ?", []string{"jerry", "tom"}).Find(&students)
+ r := db.Where("name like ?", "t%").Find(&students)
+ r := db.Where("name like binary ?", "T%").Find(&students)
+ r := db.Where("name like ? and age > ?", "t%", 20).Find(&students)
+ r := db.Where("id between ? and ?", 15, 17).Find(&students) // id范围[15, 17]
+ r := db.Where("id = ? or id = ?", 15, 17).Find(&students) // or
+ 2、struct或map条件
+ r := db.Where(14, 16, 17).Find(&students)
+ r := db.Where([]int{14, 16, 17}).Find(&students) // WHERE `students`.`id` IN 
+(14,16,17)
+ r := db.Where(&Student{}).Find(&students) // find all
+ r := db.Find(&students) // find all 更简洁
+r := db.Where(&Student{ID: 15}).Find(&students)
+ r := db.Where(15).Find(&students) // 更简洁
+r := db.Where(&Student{ID: 15, Name: "Tom"}).Find(&students) // and
+ r := db.Where(map[string]interface{}{"name": "Tom", "id": 
+16}).Find(&students) // and
+ struct条件中出现了零值，例如
+db.Where(&Student{Name: "Tom", Age: 0}) ，Age是零值，就不会
+出现在条件中。
+
+ r := db.Where(&Student{Name: "Tom", Age: 20}, "name", "age").Find(&students) 
+// 指定使用结构体里面的name和age字段作为条件，and
+ 3、Not
+将Where换成Not即可，表示条件取反。
+
+ r := db.Not("id = ? or id = ?", 15, 17).Find(&students)
+ r := db.Not("name = ?", "Tom").Find(&students)
+ 4、Or
+ Or的用法和Where一样。
+Where().Where()是And关系，Where().Or()是Or关系。
+
+ r := db.Where("name = ?", "Tom").Or("name=?", "Jerry").Find(&students)
+ r := db.Where("name = ?", "Tom").Or(&Student{Name: "Jerry"}).Find(&students)
+排序 
+ 
+分组 
+r := db.Order("id desc").Find(&students) // ORDER BY id desc
+ r := db.Order("name, id desc").Find(&students)         // ORDER BY name,id 
+desc
+ r := db.Order("name").Order("id desc").Find(&students) // ORDER BY name,id 
+desc
+
+ r := db.Group("id").Find(&students) // GROUP BY `id`
+ r := db.Group("name").Find(&students) // GROUP BY `name`
+ r := db.Group("id").Group("name").Find(&students) // GROUP BY `id`,`name`
+
+ // SELECT name, count(id) as c FROM `students` GROUP BY `name`
+ r := db.Select("name, count(id) as c").Group("name").Find(&students)
+ // 但是students中没有属性来保存count的值
+
+ // 使用Rows()返回所有行，自行获取字段值，但是要用Table指定表名
+type Result struct {
+    name  string
+    count int
+ }
+ var r = Result{}
+ rows, err := db.Table("students").Select("name, count(id) as 
+c").Group("name").Rows()
+ fmt.Println(err)
+ // 遍历每一行，填充2个属性的结构体实例
+for rows.Next() {
+    rows.Scan(&r.name, &r.count)
+    fmt.Println(r, "@@@")
+ }
+
+ type Result struct { // 和Select的投影字段对应
+    Name  string
+    Count int
+ }
+ var r = Result{}
+ rows, err := db.Table("students").Select("name, count(id) as 
+c").Group("name").Having("c > 3").Rows()
+ fmt.Println(err)
+ // 遍历每一行，填充2个属性的结构体实例
+for rows.Next() {
+    rows.Scan(&r.Name, &r.Count)
+    fmt.Println(r, "@@@")
+ }
+ // 使用Scan填充容器，注意字段名要大写开头
+type Result struct {
+    Name string
+
+ 
+Join 
+ 
+ 
+    C    int // 或Count int `gorm:"column:c"`
+ }
+ var rows = []*Result{}
+ db.Table("students").Select("name, count(id) as c").Group("name").Having("c 
+> 3").Scan(&rows) // Find(&rows)
+ for i, r := range rows {
+    fmt.Printf("%d, %T %#[2]v\n", i, r)
+ }
+
+ SELECT
+    employees.emp_no, 
+    employees.first_name, 
+    employees.last_name, 
+    salaries.salary
+ FROM
+    employees
+    INNER JOIN
+    salaries
+    ON 
+        employees.emp_no = salaries.emp_no
+
+ type Result struct {
+    EmpNo     int
+    FirstName string
+    LastName  string
+    Salary    int
+ }
+ rows, err := db.Table("employees as e").Select("e.emp_no, first_name, 
+last_name, salary").
+ Joins("join salaries as s on e.emp_no = s.emp_no").Rows() // 比较麻烦，还是建议
+使用Find或Scan
+ fmt.Println(err)
+ var r Result
+ for rows.Next() {
+    rows.Scan(&r.EmpNo, &r.FirstName, &r.LastName, &r.Salary)
+    fmt.Println(r, "###")
+ }
+
+ type Result struct {
+    EmpNo     int
+    FirstName string
+    LastName  string
+    Salary    int
+ }
+ var results = []*Result{}
+
+Left Join 
+r := db.Table("employees as e").Select("e.emp_no, first_name, last_name, 
+salary").
+    Joins("join salaries on e.emp_no = salaries.emp_no").Find(&results) // 
+Scan(&results)
+ fmt.Println(r)
+ fmt.Println(r.Error)
+ fmt.Println(r.RowsAffected)
+ fmt.Println("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+ for i, row := range results {
+    fmt.Println(i, row)
+ }
+
+ db.Select("e.emp_no, first_name, last_name, salary").Table("employees as e").
+    Joins("left join salaries on e.emp_no = salaries.emp_no").Find(&results)
+ 1
+ 2
+ package main
+ import (
+    "fmt"
+    "gorm.io/driver/mysql"
+    "gorm.io/gorm"
+    "gorm.io/gorm/logger"
+ )
+ func main() {
+    db, err := gorm.Open(mysql.Open("wayne:wayne@/test"), &gorm.Config{
+        Logger: logger.Default.LogMode(logger.Info),
+    })
+    if err != nil {
+        panic(err)
+    }
+    type Employee struct {
+        EmpNo     int
+        BirthDate string
+        FirstName string
+        LastName  string
+        Gender    byte
+        HireDate  string
+    }
+    type Result struct {
+        Employee // 嵌套
+        Salary int
+    }
+    var results []*Result
+    r := db.Select("e.*, s.salary").Table("employees as e").Joins("left join 
+salaries as s on e.emp_no=s.emp_no").Find(&results)
+    fmt.Println(r.Error)
+    fmt.Println("~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    for i, v := range results {
+        fmt.Println(i+1, v)
+ 
+更新 
+}
+ }
+ https://gorm.io/zh_CN/docs/update.html
+先查后改：先查到一个实例，对这个实例属性进行修改，然后调用db.Save()方法保存。
+db.Save()方法会保存所有字段，对于没有主键的实例相当于Insert into，有主键的实例相当于Update。
+
+ // 先查
+var student Student
+ db.First(&student)
+ fmt.Println(student)
+ student.Age += 10
+ student.Name = "Sam"
+ // 后修改
+db.Save(&student)
+ fmt.Println(student)
+ Update单个字段
+
+ r := db.Model(&Student{ID: 13}).Update("age", 11) // 更新符合条件的所有记录的一个
+字段
+// UPDATE `students` SET `age`=11 WHERE `id` = 13
+ r := db.Model(&Student{}).Update("age", 11) // 没有指定ID或Where条件，是全表更新
+age字段，这是非常危险的
+fmt.Println(r.Error) // 会报WHERE conditions required错误，更新失败，这是一种保护
+Updates更新多列
+多个键值对，使用map或结构体实例传参。
+同样，没有指定ID或Where条件，是全表更新age字段，这是非常危险的，报WHERE conditions
+ required错误1 2
+ r := db.Model(&Student{}).Where("age < ?", 20).Updates(map[string]interface{}
+ {"name": "John", "age": 23})
+ fmt.Println(r.Error)
+
+ r := db.Model(&Student{}).Where("age < ?", 24).Updates(Student{Name: "John", 
+Age:18})
+ fmt.Println(r.Error)
+删除 
+https://gorm.io/zh_CN/docs/delete.html
+删除操作是危险的，慎重操作！1
+ 
+ result := db.Delete(&Student{})
+ fmt.Println(result.Error)
+ // 报WHERE conditions required错误，这是全表删除，危险
+
+ result := db.Delete(&Student{}, 15) // 指定主键
+fmt.Println(result.Error)
+ db.Delete(&Student{}, []int{15, 16, 18}) // DELETE FROM `students` WHERE 
+`students`.`id` IN (15,16,18)
+
+ result := db.Where("id > ?", 15).Delete(&Student{}) // 删除符合条件的一批
+fmt.Println(result.Error
 二、对当前学习内容的思考
 
 三、遇到的问题
