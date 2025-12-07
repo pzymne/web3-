@@ -645,5 +645,47 @@ func main() {
 去重后前 1 个元素: [1]
 */
 
+6）题目：给定一个整数数组 nums 和一个目标值 target，请你在该数组中找出和为目标值的那两个整数
+代码如下：
+package main
+
+import "fmt"
+
+func twoSum(nums []int, target int) []int {
+	// 创建一个map，key是数字，value是该数字的索引
+	numMap := make(map[int]int)
+
+	for i, num := range nums {
+		complement := target - num
+		// 检查补数是否已经在map中
+		if idx, exists := numMap[complement]; exists {
+			// 找到了，返回两个索引
+			return []int{idx, i}
+		}
+		// 没找到，将当前数字和索引存入map
+		numMap[num] = i
+	}
+
+	// 题目保证有解，这里返回空切片只是为了完整性
+	return []int{}
+}
+
+func main() {
+	// 测试用例
+	testCases := []struct {
+		nums   []int
+		target int
+	}{
+		{[]int{2, 7, 11, 15}, 9},
+		{[]int{3, 2, 4}, 6},
+		{[]int{3, 3}, 6},
+	}
+
+	for _, tc := range testCases {
+		result := twoSum(tc.nums, tc.target)
+		fmt.Printf("nums=%v, target=%d, result=%v\n", tc.nums, tc.target, result)
+	}
+}
+
 
 
