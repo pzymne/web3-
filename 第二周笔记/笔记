@@ -466,7 +466,7 @@ func main() {
 	fmt.Println(isValid(""))       // true（空字符串有效）
 }
 
-3、题目：查找字符串数组中的最长公共前缀
+3）、题目：查找字符串数组中的最长公共前缀
 代码如下：
 package main
 
@@ -524,5 +524,58 @@ strs = [same same same], LCP = "same"
 strs = [a], LCP = "a"
 strs = [], LCP = ""
 */
+
+4）题目：给定一个由整数组成的非空数组所表示的非负整数，在该数的基础上加一
+代码如下：
+package main
+
+import "fmt"
+
+func plusOne(digits []int) []int {
+	n := len(digits)
+
+	// 从最后一位开始加1
+	for i := n - 1; i >= 0; i-- {
+		if digits[i] < 9 {
+			digits[i]++
+			return digits
+		}
+		// 当前位是9，加1后变为0，进位
+		digits[i] = 0
+	}
+
+	// 如果所有位都是9，例如[9,9,9] -> [1,0,0,0]
+	// 需要在前方添加一个1
+	return append([]int{1}, digits...)
+}
+
+func main() {
+	testCases := [][]int{
+		{1, 2, 3},    // 123 + 1 = 124
+		{4, 3, 2, 1}, // 4321 + 1 = 4322
+		{9},          // 9 + 1 = 10
+		{9, 9},       // 99 + 1 = 100
+		{8, 9, 9},    // 899 + 1 = 900
+		{1, 9, 9, 9}, // 1999 + 1 = 2000
+	}
+
+	for _, digits := range testCases {
+		fmt.Printf("%v -> ", digits)
+
+		result := plusOne(digits)
+		fmt.Printf("%v\n", result)
+	}
+}
+
+/*
+输出：
+[1 2 3] -> [1 2 4]
+[4 3 2 1] -> [4 3 2 2]
+[9] -> [1 0]
+[9 9] -> [1 0 0]
+[8 9 9] -> [9 0 0]
+[1 9 9 9] -> [2 0 0 0]
+*/
+
 
 
