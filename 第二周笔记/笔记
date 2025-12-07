@@ -466,3 +466,63 @@ func main() {
 	fmt.Println(isValid(""))       // true（空字符串有效）
 }
 
+3、题目：查找字符串数组中的最长公共前缀
+代码如下：
+package main
+
+import "fmt"
+
+func longestCommonPrefix(strs []string) string {
+	if len(strs) == 0 {
+		return ""
+	}
+
+	// 以第一个字符串为基准
+	prefix := strs[0]
+
+	for i := 1; i < len(strs); i++ {
+		// 比较当前字符串和前缀的公共部分
+		j := 0
+		for j < len(prefix) && j < len(strs[i]) && prefix[j] == strs[i][j] {
+			j++
+		}
+
+		// 更新前缀为更短的部分
+		prefix = prefix[:j]
+
+		// 如果前缀为空，直接返回
+		if prefix == "" {
+			return ""
+		}
+	}
+
+	return prefix
+}
+
+func main() {
+	testCases := [][]string{
+		{"flower", "flow", "flight"},
+		{"dog", "racecar", "car"},
+		{"", "abc", "def"},
+		{"same", "same", "same"},
+		{"a"},
+		{},
+	}
+
+	for _, strs := range testCases {
+		result := longestCommonPrefix(strs)
+		fmt.Printf("strs = %v, LCP = \"%s\"\n", strs, result)
+	}
+}
+
+/*
+输出：
+strs = [flower flow flight], LCP = "fl"
+strs = [dog racecar car], LCP = ""
+strs = [ abc def], LCP = ""
+strs = [same same same], LCP = "same"
+strs = [a], LCP = "a"
+strs = [], LCP = ""
+*/
+
+
