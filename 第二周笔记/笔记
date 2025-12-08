@@ -1135,3 +1135,40 @@ func main() {
 	fmt.Printf("期望值: %d\n", 10*1000)
 	fmt.Printf("是否一致: %v\n", counter == 10*1000)
 }
+
+9）题目 ：使用原子操作（ sync/atomic 包）实现一个无锁的计数器。启动10个协程，每个协程对计数器进行1000次递增操作，最后输出计数器的值。
+代码如下：
+func simpleAtomicExample() {
+	fmt.Println("\n=== 简洁版本（直接回答问题） ===")
+	
+	var counter int64 // 必须使用 int64
+	var wg sync.WaitGroup
+	
+	// 启动10个协程
+	wg.Add(10)
+	for i := 0; i < 10; i++ {
+		go func(workerID int) {
+			defer wg.Done()
+			
+			// 每个协程对计数器进行1000次递增
+			for j := 0; j < 1000; j++ {
+				atomic.AddInt64(&counter, 1) // 原子递增
+			}
+			
+			fmt.Printf("Worker %d completed\n", workerID)
+		}(i)
+	}
+	
+	// 等待所有协程完成
+	wg.Wait()
+	
+	// 输出最终结果
+	fmt.Printf("\nFinal counter value: %d\n", counter)
+	fmt.Printf("Expected value: %d\n", 10*1000)
+	
+	if counter == int64(10*1000) {
+		fmt.Println("✓ Counter is correct!")
+	} else {
+		fmt.Println("✗ Error in counter!")
+	}
+}
