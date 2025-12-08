@@ -1095,3 +1095,43 @@ func consumerWithBuffer(ch <-chan int) {
     
     fmt.Println("消费者工作完成")
 }
+
+8)题目：编写一个程序，使用 sync.Mutex 来保护一个共享的计数器。启动10个协程，每个协程对计数器进行1000次递增操作，最后输出计数器的值
+代码如下：
+package main
+
+import (
+	"fmt"
+	"sync"
+)
+
+func main() {
+	fmt.Println("\n=== 简洁版本（直接回答问题） ===")
+
+	var (
+		counter int
+		mu      sync.Mutex
+		wg      sync.WaitGroup
+	)
+
+	// 启动10个协程
+	wg.Add(10)
+	for i := 0; i < 10; i++ {
+		go func(id int) {
+			defer wg.Done()
+
+			// 每个协程对计数器进行1000次递增
+			for j := 0; j < 1000; j++ {
+				mu.Lock()   // 加锁保护临界区
+				counter++   // 递增操作
+				mu.Unlock() // 解锁
+			}
+		}(i)
+	}
+
+	wg.Wait()
+
+	fmt.Printf("最终计数器值: %d\n", counter)
+	fmt.Printf("期望值: %d\n", 10*1000)
+	fmt.Printf("是否一致: %v\n", counter == 10*1000)
+}
