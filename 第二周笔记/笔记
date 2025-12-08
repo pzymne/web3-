@@ -991,3 +991,107 @@ func simpleVersion() {
 	
 	emp.PrintInfo()
 }
+
+7）题目:编写一个程序，使用通道实现两个协程之间的通信。一个协程生成从1到10的整数，并将这些整数发送到通道中，另一个协程从通道中接收这些整数并打印出来
+方法一：代码如下
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+    // 创建一个无缓冲通道
+    ch := make(chan int)
+    
+    // 启动生产者协程
+    go producer(ch)
+    
+    // 启动消费者协程
+    go consumer(ch)
+    
+    // 主协程等待一段时间，让子协程完成工作
+    time.Sleep(2 * time.Second)
+    
+    fmt.Println("程序结束")
+}
+
+// 生产者函数：生成1到10的整数并发送到通道
+func producer(ch chan<- int) {
+    fmt.Println("生产者开始工作...")
+    
+    for i := 1; i <= 10; i++ {
+        fmt.Printf("生产者发送: %d\n", i)
+        ch <- i  // 发送数据到通道
+        
+        // 添加短暂延迟，使执行过程更清晰可见
+        time.Sleep(100 * time.Millisecond)
+    }
+    
+    // 发送完成后关闭通道
+    close(ch)
+    fmt.Println("生产者工作完成，通道已关闭")
+}
+
+// 消费者函数：从通道接收整数并打印
+func consumer(ch <-chan int) {
+    fmt.Println("消费者开始工作...")
+    
+    // 使用range循环接收数据，通道关闭后自动退出循环
+    for value := range ch {
+        fmt.Printf("消费者接收: %d\n", value)
+        time.Sleep(150 * time.Millisecond) // 消费者处理稍慢
+    }
+    
+    fmt.Println("消费者工作完成")
+}
+方法二：
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+    // 创建带缓冲的通道（容量为3）
+    ch := make(chan int, 3)
+    
+    // 启动生产者协程
+    go producerWithBuffer(ch)
+    
+    // 启动消费者协程
+    go consumerWithBuffer(ch)
+    
+    // 等待足够时间让协程完成
+    time.Sleep(3 * time.Second)
+    
+    fmt.Println("程序结束")
+}
+
+func producerWithBuffer(ch chan<- int) {
+    fmt.Println("生产者开始工作（使用带缓冲通道）...")
+    
+    for i := 1; i <= 10; i++ {
+        fmt.Printf("生产者发送: %d (通道长度: %d/%d)\n", 
+            i, len(ch), cap(ch))
+        ch <- i
+        time.Sleep(50 * time.Millisecond) // 生产者较快
+    }
+    
+    close(ch)
+    fmt.Println("生产者工作完成")
+}
+
+func consumerWithBuffer(ch <-chan int) {
+    fmt.Println("消费者开始工作（使用带缓冲通道）...")
+    
+    for value := range ch {
+        fmt.Printf("消费者接收: %d (通道长度: %d/%d)\n", 
+            value, len(ch), cap(ch))
+        time.Sleep(200 * time.Millisecond) // 消费者较慢
+    }
+    
+    fmt.Println("消费者工作完成")
+}
