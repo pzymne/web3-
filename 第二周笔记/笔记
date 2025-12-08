@@ -755,3 +755,28 @@ func withPointerFunc(ptr *int) {
     *ptr = *ptr + 10
 }
 
+2）实现一个函数，接收一个整数切片的指针，将切片中的每个元素乘以2。
+考察点 ：指针运算、切片操作。
+代码如下：
+package main
+
+import "fmt"
+
+// 接收整数切片的指针，将每个元素乘以2
+func multiplyByTwo(slicePtr *[]int) {
+    // 解引用获取切片
+    slice := *slicePtr
+    for i := range slice {
+        slice[i] *= 2
+    }
+}
+
+func main() {
+    nums := []int{1, 2, 3, 4, 5}
+    fmt.Println("原始切片:", nums)
+    
+    // 传递切片的指针
+    multiplyByTwo(&nums)
+    
+    fmt.Println("修改后切片:", nums)
+}
