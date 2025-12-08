@@ -809,3 +809,88 @@ func main() {
 
 	wg.Wait()
 }
+
+4）题目：设计一个任务调度器，接收一组任务（可以用函数表示），并使用协程并发执行这些任务，同时统计每个任务的执行时间。
+代码如下：
+package main
+
+import (
+	"fmt"
+	"sync"
+	"time"
+)
+
+type Task func()
+
+type TaskScheduler struct {
+	maxConcurrency int
+	wg             sync.WaitGroup
+	semaphore      chan struct{}
+}
+
+func NewTaskScheduler(maxConcurrency int) *TaskScheduler {
+	if maxConcurrency <= 0 {
+		maxConcurrency = 5
+	}
+	return &TaskScheduler{
+		maxConcurrency: maxConcurrency,
+		semaphore:      make(chan struct{}, maxConcurrency),
+	}
+}
+
+func (ts *TaskScheduler) Run(tasks []Task) []time.Duration {
+	durations := make([]time.Duration, len(tasks))
+	var mu sync.Mutex
+
+	for i, task := range tasks {
+		ts.wg.Add(1)
+
+		go func(idx int, t Task) {
+			defer ts.wg.Done()
+
+			// 控制并发数
+			ts.semaphore <- struct{}{}
+			defer func() { <-ts.semaphore }()
+
+			// 记录执行时间
+			start := time.Now()
+			t()
+			duration := time.Since(start)
+
+			mu.Lock()
+			durations[idx] = duration
+			mu.Unlock()
+
+			fmt.Printf("任务 %d 执行完成，耗时: %v\n", idx+1, duration)
+		}(i, task)
+	}
+
+	ts.wg.Wait()
+	return durations
+}
+
+func main() {
+	// 创建任务列表
+	tasks := []Task{
+		func() { time.Sleep(500 * time.Millisecond) },
+		func() { time.Sleep(300 * time.Millisecond) },
+		func() { time.Sleep(700 * time.Millisecond) },
+		func() { time.Sleep(200 * time.Millisecond) },
+		func() { time.Sleep(400 * time.Millisecond) },
+	}
+
+	// 创建调度器并执行任务
+	scheduler := NewTaskScheduler(2) // 最大并发数2
+	fmt.Println("开始执行任务...")
+
+	durations := scheduler.Run(tasks)
+
+	// 统计信息
+	var total time.Duration
+	for i, d := range durations {
+		total += d
+		fmt.Printf("任务%d: %v\n", i+1, d)
+	}
+	fmt.Printf("平均执行时间: %v\n", total/time.Duration(len(tasks)))
+}
+
