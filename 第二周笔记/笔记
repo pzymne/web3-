@@ -1230,3 +1230,84 @@ COMMIT;
 
 -- 如果余额不足，需要回滚
 -- ROLLBACK;
+
+3）题目2：实现类型安全映射,
+假设有一个 books 表，包含字段 id 、 title 、 author 、 price 。
+要求 ：
+定义一个 Book 结构体，包含与 books 表对应的字段。,
+编写Go代码，使用Sqlx执行一个复杂的查询，例如查询价格大于 50 元的书籍，并将结果映射到 Book 结构体切片中，确保类型安全。
+package main
+
+import (
+	"fmt"
+	"log"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
+)
+
+// Book 结构体，对应 books 表结构
+type Book struct {
+	ID     int     `db:"id"`
+	Title  string  `db:"title"`
+	Author string  `db:"author"`
+	Price  float64 `db:"price"`
+}
+
+func queryBooksByMinPrice(db *sqlx.DB, minPrice float64) ([]Book, error) {
+	var books []Book
+
+	// 使用命名查询（Named Query）
+	// :min_price 是命名参数
+	query := `
+		SELECT id, title, author, price 
+		FROM books 
+		WHERE price > :min_price
+		ORDER BY price DESC
+	`
+
+	// 使用 map 作为参数
+	params := map[string]interface{}{
+		"min_price": minPrice,
+	}
+
+	// 方法1：使用 NamedQuery 返回 Rows
+	rows, err := db.NamedQuery(query, params)
+	if err != nil {
+		return nil, fmt.Errorf("命名查询失败: %v", err)
+	}
+	defer rows.Close()
+
+	// 遍历结果集
+	for rows.Next() {
+		var book Book
+		// 使用 StructScan 将行数据映射到结构体
+		err := rows.StructScan(&book)
+		if err != nil {
+			return nil, fmt.Errorf("映射数据失败: %v", err)
+		}
+		books = append(books, book)
+	}
+
+	return books, nil
+}
+func main() {
+	// 数据库连接配置
+	dsn := "username:password@tcp(127.0.0.1:3306)/database_name?charset=utf8mb4&parseTime=True&loc=Local"
+
+	// 使用 sqlx 连接数据库
+	db, err := sqlx.Connect("mysql", dsn)
+	if err != nil {
+		log.Fatal("数据库连接失败:", err)
+	}
+	defer db.Close()
+
+	// 示例1：简单的命名查询
+	fmt.Println("=== 示例1：查询价格大于50元的书籍 ===")
+	books1, err := queryBooksByMinPrice(db, 50.0)
+	if err != nil {
+		log.Fatal("查询失败:", err)
+	}
+	fmt.Println(books1)
+
+}
