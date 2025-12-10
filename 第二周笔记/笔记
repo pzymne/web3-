@@ -1382,6 +1382,101 @@ func main() {
 	fmt.Println("数据库表创建成功！")
 }
 
+5）基于上述博客系统的模型定义。
+要求 ：
+编写Go代码，使用Gorm查询某个用户发布的所有文章及其对应的评论信息。,
+编写Go代码，使用Gorm查询评论数量最多的文章信息。
+package main
+
+import (
+    "fmt"
+    "gorm.io/driver/mysql"
+    "gorm.io/gorm"
+)
+
+// 方法1：使用 JOIN 查询扁平化结果，然后手动组装
+func getUserPostsWithComments(db *gorm.DB, userID uint) ([]Post, error) {
+    // 第一步：查询文章和评论的扁平化结果
+    var flatResults []struct {
+        Post
+        CommentID      uint
+        CommentContent string
+        CommentUserID  uint
+        CommentCreatedAt time.Time
+        CommenterUsername string
+        CommenterEmail    string
+    }
+    
+    // 使用 JOIN 查询，不使用 Raw，使用 GORM 的链式调用
+    err := db.Model(&Post{}).
+        Select(`
+            posts.*,
+            comments.id as comment_id,
+            comments.content as comment_content,
+            comments.user_id as comment_user_id,
+            comments.created_at as comment_created_at,
+            commenter.username as commenter_username,
+            commenter.email as commenter_email
+        `).
+        Joins("LEFT JOIN comments ON posts.id = comments.post_id").
+        Joins("LEFT JOIN users as commenter ON comments.user_id = commenter.id").
+        Where("posts.user_id = ?", userID).
+        Order("posts.created_at DESC, comments.created_at DESC").
+        Find(&flatResults).Error
+    
+    if err != nil {
+        return nil, err
+    }
+    
+    // 第二步：手动组装成嵌套结构
+    postsMap := make(map[uint]*Post)
+    var posts []Post
+    
+    for _, flat := range flatResults {
+        // 如果文章还没有添加到map中
+        if _, exists := postsMap[flat.Post.ID]; !exists {
+            // 创建文章对象
+            post := Post{
+                ID:        flat.Post.ID,
+                Title:     flat.Post.Title,
+                Content:   flat.Post.Content,
+                UserID:    flat.Post.UserID,
+                CreatedAt: flat.Post.CreatedAt,
+                UpdatedAt: flat.Post.UpdatedAt,
+                Comments:  []Comment{},
+                User:      flat.Post.User, // 从 JOIN 中获取的用户信息
+            }
+            postsMap[flat.Post.ID] = &post
+            posts = append(posts, post)
+        }
+        
+        // 如果有评论（CommentID > 0）
+        if flat.CommentID > 0 {
+            comment := Comment{
+                ID:        flat.CommentID,
+                Content:   flat.CommentContent,
+                PostID:    flat.Post.ID,
+                UserID:    flat.CommentUserID,
+                CreatedAt: flat.CommentCreatedAt,
+                User: User{
+                    ID:       flat.CommentUserID,
+                    Username: flat.CommenterUsername,
+                    Email:    flat.CommenterEmail,
+                },
+            }
+            
+            // 将评论添加到对应的文章
+            if post, exists := postsMap[flat.Post.ID]; exists {
+                post.Comments = append(post.Comments, comment)
+            }
+        }
+    }
+    
+    return posts, nil
+}
+
+
+
 // 模型关系说明：
 // 1. User 与 Post 的关系（一对多）
 // 一个 User 可以有多篇 Post
