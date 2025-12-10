@@ -1385,7 +1385,7 @@ func main() {
 5）基于上述博客系统的模型定义。
 要求 ：
 编写Go代码，使用Gorm查询某个用户发布的所有文章及其对应的评论信息。,
-编写Go代码，使用Gorm查询评论数量最多的文章信息。
+//编写Go代码，使用Gorm查询评论数量最多的文章信息。
 package main
 
 import (
@@ -1474,7 +1474,97 @@ func getUserPostsWithComments(db *gorm.DB, userID uint) ([]Post, error) {
     
     return posts, nil
 }
-
+6）题目：编写Go代码，使用Gorm查询评论数量最多的文章信息。
+// 方法：直接使用 JOIN 和 GROUP BY 查询评论最多的文章（单次查询）
+func getMostCommentedPostDirect(db *gorm.DB) (map[string]interface{}, error) {
+    var result map[string]interface{}
+    
+    // 这个查询需要处理 NULL 值，使用 COALESCE
+    // 但由于不能使用 Raw，我们采用分步骤查询的方式
+    
+    // 第一步：获取评论数最多的文章ID和评论数
+    var postStats struct {
+        PostID       uint
+        CommentCount int64
+    }
+    
+    err := db.Model(&Comment{}).
+        Select("post_id, COUNT(*) as comment_count").
+        Group("post_id").
+        Order("comment_count DESC").
+        Limit(1).
+        Find(&postStats).Error
+    
+    if err != nil {
+        return nil, err
+    }
+    
+    if postStats.PostID == 0 {
+        return nil, fmt.Errorf("没有找到评论")
+    }
+    
+    // 第二步：获取文章详细信息
+    var post Post
+    err = db.Where("id = ?", postStats.PostID).First(&post).Error
+    if err != nil {
+        return nil, err
+    }
+    
+    // 第三步：获取文章作者信息
+    var author User
+    err = db.Where("id = ?", post.UserID).First(&author).Error
+    if err != nil {
+        return nil, err
+    }
+    post.User = author
+    
+    // 第四步：获取评论信息
+    var comments []Comment
+    err = db.Where("post_id = ?", postStats.PostID).
+        Order("created_at DESC").
+        Find(&comments).Error
+    
+    if err != nil {
+        return nil, err
+    }
+    
+    // 第五步：获取评论者信息
+    if len(comments) > 0 {
+        var commenterIDs []uint
+        for _, comment := range comments {
+            commenterIDs = append(commenterIDs, comment.UserID)
+        }
+        
+        var commenters []User
+        err = db.Where("id IN ?", commenterIDs).Find(&commenters).Error
+        if err != nil {
+            return nil, err
+        }
+        
+        // 创建评论者ID到用户的映射
+        commenterMap := make(map[uint]User)
+        for _, commenter := range commenters {
+            commenterMap[commenter.ID] = commenter
+        }
+        
+        // 为评论设置用户信息
+        for i := range comments {
+            if commenter, exists := commenterMap[comments[i].UserID]; exists {
+                comments[i].User = commenter
+            }
+        }
+    }
+    
+    post.Comments = comments
+    
+    // 组装结果
+    result = map[string]interface{}{
+        "post":          post,
+        "comment_count": postStats.CommentCount,
+    }
+    
+    return result, nil
+}
 
 
 // 模型关系说明：
