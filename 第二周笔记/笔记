@@ -391,7 +391,7 @@ fmt.Println(result.Error
 2、go语言中sql语句数据库参数化查询怎么防止注入攻击的？
 3、gin中间件的作用是啥？没太看明白啥用处
 4、restful接口是什么？
-
+5、gorm中外键约束的定义方式有点不太理解
 四、任务（4个）
 1、任务一：
 1）题目：只出现一次的数字：给定一个非空整数数组，除了某个元素只出现一次以外，其余每个元素均出现两次。找出那个只出现了一次的元素。可以使用 for 循环遍历数组，结合 if 条件判断和 map 数据结构来解决，例如通过 map 记录每个元素出现的次数，然后再遍历 map 找到出现次数为1的元素。
@@ -1312,3 +1312,92 @@ func main() {
 	fmt.Println(books1)
 
 }
+
+4）题目：模型定义,
+假设你要开发一个博客系统，有以下几个实体： User （用户）、 Post （文章）、 Comment （评论）。
+要求 ：
+使用Gorm定义 User 、 Post 和 Comment 模型，其中 User 与 Post 是一对多关系（一个用户可以发布多篇文章）， Post 与 Comment 也是一对多关系（一篇文章可以有多个评论）。,
+编写Go代码，使用Gorm创建这些模型对应的数据库表。
+package main
+
+import (
+	"fmt"
+	"time"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+)
+
+// User 模型
+type User struct {
+	ID        uint   `gorm:"primaryKey"`
+	Username  string `gorm:"size:50;not null;unique"`
+	Email     string `gorm:"size:100;not null;unique"`
+	Password  string `gorm:"size:255;not null"`
+	Posts     []Post `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"` // 一对多关系
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+// Post 模型
+type Post struct {
+	ID        uint      `gorm:"primaryKey"`
+	Title     string    `gorm:"size:200;not null"`
+	Content   string    `gorm:"type:text;not null"`
+	UserID    uint      `gorm:"not null;index"`                                 // 外键
+	User      User      `gorm:"foreignKey:UserID"`                              // 反向引用
+	Comments  []Comment `gorm:"foreignKey:PostID;constraint:OnDelete:CASCADE;"` // 一对多关系
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+// Comment 模型
+type Comment struct {
+	ID        uint   `gorm:"primaryKey"`
+	Content   string `gorm:"type:text;not null"`
+	UserID    uint   `gorm:"not null;index"`    // 外键
+	PostID    uint   `gorm:"not null;index"`    // 外键
+	User      User   `gorm:"foreignKey:UserID"` // 反向引用
+	Post      Post   `gorm:"foreignKey:PostID"` // 反向引用
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func main() {
+	// 数据库连接配置
+	dsn := "pzy:h603ello@tcp(127.0.0.1:3306)/blog_db?charset=utf8mb4&parseTime=True&loc=Local"
+
+	// 连接数据库
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+
+	// 自动迁移（创建表）
+	err = db.AutoMigrate(&User{}, &Post{}, &Comment{})
+	if err != nil {
+		panic("failed to migrate database")
+	}
+
+	fmt.Println("数据库表创建成功！")
+}
+
+// 模型关系说明：
+// 1. User 与 Post 的关系（一对多）
+// 一个 User 可以有多篇 Post
+
+// Post 结构中的 UserID 字段是外键
+
+// User 结构中的 Posts 字段是 Post 类型的切片
+
+// 2. Post 与 Comment 的关系（一对多）
+// 一篇 Post 可以有多个 Comment
+
+// Comment 结构中的 PostID 字段是外键
+
+// Post 结构中的 Comments 字段是 Comment 类型的切片
+
+// 3. Comment 与 User 的关系（多对一）
+// 一条 Comment 属于一个 User
+
+// Comment 结构中的 UserID 字段是外键
