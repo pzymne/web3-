@@ -1565,7 +1565,128 @@ func getMostCommentedPostDirect(db *gorm.DB) (map[string]interface{}, error) {
     
     return result, nil
 }
+7）
+package main
 
+import (
+    "gorm.io/gorm"
+    "time"
+)
+
+type User struct {
+    ID        uint       `gorm:"primaryKey"`
+    Username  string     `gorm:"size:50;not null;unique"`
+    Email     string     `gorm:"size:100;not null;unique"`
+    Password  string     `gorm:"size:255;not null"`
+    Posts     []Post     `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE;"`
+    PostCount int        `gorm:"default:0"`  // 新增字段
+    CreatedAt time.Time
+    UpdatedAt time.Time
+}
+
+type Post struct {
+    ID            uint       `gorm:"primaryKey"`
+    Title         string     `gorm:"size:200;not null"`
+    Content       string     `gorm:"type:text;not null"`
+    UserID        uint       `gorm:"not null;index"`
+    User          User       `gorm:"foreignKey:UserID"`
+    Comments      []Comment  `gorm:"foreignKey:PostID;constraint:OnDelete:CASCADE;"`
+    CommentCount  int        `gorm:"default:0"`           // 新增字段
+    CommentStatus string     `gorm:"size:10;default:'无评论'"` // 新增字段
+    CreatedAt     time.Time
+    UpdatedAt     time.Time
+}
+
+type Comment struct {
+    ID        uint      `gorm:"primaryKey"`
+    Content   string    `gorm:"type:text;not null"`
+    UserID    uint      `gorm:"not null;index"`
+    PostID    uint      `gorm:"not null;index"`
+    User      User      `gorm:"foreignKey:UserID"`
+    Post      Post      `gorm:"foreignKey:PostID"`
+    CreatedAt time.Time
+    UpdatedAt time.Time
+}
+// 在文章创建后自动更新用户的文章数量统计
+func (p *Post) AfterCreate(tx *gorm.DB) (err error) {
+    // 直接使用 Update 更新用户的文章数量
+    err = tx.Model(&User{}).
+        Where("id = ?", p.UserID).
+        Update("post_count", gorm.Expr("post_count + 1")).Error
+    return
+}
+// 在评论删除后检查并更新文章的评论状态
+func (c *Comment) AfterDelete(tx *gorm.DB) (err error) {
+    // 查询文章当前的评论数量
+    var count int64
+    if err = tx.Model(&Comment{}).
+        Where("post_id = ?", c.PostID).
+        Count(&count).Error; err != nil {
+        return
+    }
+    
+    // 如果评论数量为0，更新状态为"无评论"
+    if count == 0 {
+        err = tx.Model(&Post{}).
+            Where("id = ?", c.PostID).
+            Updates(map[string]interface{}{
+                "comment_status": "无评论",
+                "comment_count":  0,
+            }).Error
+    }
+    return
+}
+package main
+
+import (
+    "fmt"
+    "log"
+    
+    "gorm.io/driver/sqlite"
+    "gorm.io/gorm"
+)
+
+func main() {
+    // 使用 SQLite 内存数据库进行测试
+    db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+    if err != nil {
+        log.Fatal(err)
+    }
+    
+    // 创建表
+    db.AutoMigrate(&User{}, &Post{}, &Comment{})
+    
+    // 创建测试用户
+    user := User{Username: "test", Email: "test@test.com", Password: "123"}
+    db.Create(&user)
+    
+    // 测试 Post 钩子
+    fmt.Println("测试 Post 钩子:")
+    post := Post{Title: "测试文章", Content: "内容", UserID: user.ID}
+    db.Create(&post)
+    
+    // 验证用户文章数量
+    db.First(&user, user.ID)
+    fmt.Printf("用户文章数量: %d\n", user.PostCount) // 应为 1
+    
+    // 测试 Comment 钩子
+    fmt.Println("\n测试 Comment 钩子:")
+    
+    // 创建评论
+    comment := Comment{Content: "测试评论", UserID: user.ID, PostID: post.ID}
+    db.Create(&comment)
+    
+    // 验证文章评论状态
+    db.First(&post, post.ID)
+    fmt.Printf("文章评论数量: %d, 状态: %s\n", post.CommentCount, post.CommentStatus)
+    
+    // 删除评论
+    db.Delete(&comment)
+    
+    // 再次验证文章评论状态
+    db.First(&post, post.ID)
+    fmt.Printf("删除后评论数量: %d, 状态: %s\n", post.CommentCount, post.CommentStatus)
+}
 
 // 模型关系说明：
 // 1. User 与 Post 的关系（一对多）
