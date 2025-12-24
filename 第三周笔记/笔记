@@ -16,3 +16,27 @@
 7、梳理一下web开发以及博客项目
 8、项目操作，跑起来？多入口cmd CLI需要用到吗
 9、TDD编程范式？
+10、type LoginRequest struct {
+	Username string `form:"username" binding:"required"`
+	Password string `form:"password" binding:"required"`
+}
+// ========== 表单绑定 ==========
+	r.POST("/api/login", func(c *gin.Context) {
+		var req LoginRequest
+		if err := c.ShouldBind(&req); err != nil {
+			errorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// 模拟登录验证
+		if req.Username == "admin" && req.Password == "admin123" {
+			success(c, gin.H{
+				"token": "fake-jwt-token",
+				"user": gin.H{
+					"username": req.Username,
+				},
+			})
+		} else {
+			errorResponse(c, http.StatusUnauthorized, "Invalid credentials")
+		}
+	})
