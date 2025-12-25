@@ -1,4 +1,4 @@
 Git is a verson control diffrence system.
-Git is free software.
+it is free software distributed under the GPL.
 hello！
 
