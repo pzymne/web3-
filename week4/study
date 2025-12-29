@@ -1,6 +1,15 @@
 一、学习的内容
 1、系统的学习了git以及相关实践操作
 2、学习了go语言CLI框架，并实现了一个计算器程序（+、-、*、/），详细程序见：https://github.com/pzymne/web3-/tree/dev/go/calculator
+3、geth项目命令有：
+runTestCommand，作用 Runs workload tests against an RPC endpoint；
+historyGenerateCommand，作用 Generates history retrieval tests；
+filterGenerateCommand,作用 Generates query set for log filter workload test；
+traceGenerateCommand 作用   Generates tests for state tracing；
+proofGenerateCommand  作用 Generates tests for state proof verification；
+filterPerfCommand,  作用  Runs log filter performance test against an RPC endpoint；
+filterFuzzCommand 作用   Generates queries and compares results against matches derived from receipts；
+参数有：app.Flags, debug.Flags等
 
 二、遇到的问题
 1、对于git merge和git rebase搞得有点模糊，另外平时工作中对于git版本控制一般用什么方式，复杂不复杂？
