@@ -1,0 +1,40 @@
+<mxfile host="65bd71144e">
+    <diagram id="X3VCLtItToxRbqL4DOUl" name="第 1 页">
+        <mxGraphModel dx="1230" dy="665" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="12" style="edgeStyle=none;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="230" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="3" target="2">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="70" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="前端" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="85" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="后端" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="290" y="245" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="&lt;h1&gt;场景&lt;/h1&gt;&lt;p&gt;当用户的Token过期后,&amp;nbsp; 提示用户重新登录&lt;/p&gt;&lt;p&gt;直接使用字符串 容易误伤&lt;/p&gt;&lt;p&gt;专门的业务异常，有专门的业务逻辑, 就需要定义业务异常 (Error)&lt;/p&gt;&lt;p&gt;定义API异常:&lt;/p&gt;&lt;p&gt;+ error code&lt;/p&gt;&lt;p&gt;+ message&lt;/p&gt;&lt;p&gt;+ ...&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="500" y="40" width="260" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="510" y="320" width="230" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="重新登录" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="570" y="355" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="xxxx原因，Token过期" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="260" y="170" width="130" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

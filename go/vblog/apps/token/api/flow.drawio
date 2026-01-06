@@ -1,0 +1,40 @@
+<mxfile host="65bd71144e">
+    <diagram id="OgsotkPrG2EuswCii6mg" name="第 1 页">
+        <mxGraphModel dx="1230" dy="381" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Router&lt;br&gt;&lt;br&gt;match /xxxxx/ ----&amp;gt; handler" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="160" y="310" width="460" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="tokens&lt;br&gt;(/vblog/api/v1/tokens)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="170" y="500" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="blogs" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="320" y="500" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="/vblog/api/v1/" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="250" y="420" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="..." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="500" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="a&lt;br&gt;&lt;br&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="170" y="590" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="a&lt;br&gt;&lt;br&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="210" y="590" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="a&lt;br&gt;&lt;br&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="250" y="590" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="&lt;h1&gt;Router Tree&lt;/h1&gt;&lt;p&gt;Tree 的每一个节点就是一个URL，每一个URL对应一个处理函数&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;POST&amp;nbsp; &amp;nbsp;/vblog/api/v1/tokens/&amp;nbsp; &amp;nbsp; &amp;nbsp;--&amp;gt; gitlab.com/go-course-project/go15/vblog/apps/token/api.(*TokenApiHandler).Login-fm (3 handlers)&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="540" y="630" width="190" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="通常我们说的RESTful接口" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="540" y="600" width="200" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

@@ -1,0 +1,40 @@
+<mxfile host="65bd71144e">
+    <diagram id="Xjf192ZTKz5n7XCB3cDC" name="第 1 页">
+        <mxGraphModel dx="975" dy="379" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="Cmd&lt;br&gt;kubectl" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="190" y="170" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Cmd&lt;br&gt;&lt;br&gt;deployment" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="260" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Cmd" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="380" y="270" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Cmd (kubectl/deployment/list)&lt;br&gt;list" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="10" y="350" width="150" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Cmd&lt;br&gt;delete" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="180" y="350" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="Cmd&lt;br&gt;delete" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="330" y="360" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="Cmd&lt;br&gt;...." style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="360" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Cmd&lt;br&gt;vblog(root)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="193" y="510" width="220" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="Cmd&lt;br&gt;init" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="150" y="600" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Cmd&lt;br&gt;start" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="600" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

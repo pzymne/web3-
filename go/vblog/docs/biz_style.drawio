@@ -1,0 +1,13 @@
+<mxfile host="65bd71144e">
+    <diagram id="zeErEUoSvFk82CQH5UDf" name="第 1 页">
+        <mxGraphModel dx="1082" dy="490" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="4" value="&lt;h1&gt;MVC&lt;/h1&gt;&lt;p&gt;Model:&amp;nbsp; 数据,&amp;nbsp; 大部分情况是数据库里面的对象 PO, GORM 结构定义&lt;/p&gt;&lt;p&gt;Controller: 处理数据的对象&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;View:&amp;nbsp; 实图&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="520" y="50" width="190" height="180" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

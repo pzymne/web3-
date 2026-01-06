@@ -1,0 +1,13 @@
+.arco-page-header {
+  padding: 0px;
+  padding-bottom: 12px;
+}
+
+.arco-page-header-wrapper {
+  padding-left: 0px;
+}
+
+.arco-page-header-title {
+  font-size: 14px;
+  color: var(--color-neutral-8);
+}

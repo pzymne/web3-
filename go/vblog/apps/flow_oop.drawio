@@ -1,0 +1,55 @@
+<mxfile host="65bd71144e">
+    <diagram id="kXrBTj5HfPhse7j2ZS3a" name="第 1 页">
+        <mxGraphModel dx="2101" dy="1734" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="&lt;div style=&quot;color: rgb(248, 248, 242); background-color: rgb(39, 40, 34); font-family: Menlo, Monaco, &amp;quot;Courier New&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;span style=&quot;color: rgb(166, 226, 46); text-decoration-line: underline;&quot;&gt;UserServiceImpl&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="450" width="150" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="&lt;h1&gt;&amp;nbsp;控制器对象(业务对象: BO)&lt;/h1&gt;&lt;p&gt;业务流程&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="10" width="330" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="4" target="2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="QueryUser" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="6" vertex="1" connectable="0">
+                    <mxGeometry x="0.1204" y="3" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="4" value="&lt;div style=&quot;color: rgb(248, 248, 242); background-color: rgb(39, 40, 34); font-family: Menlo, Monaco, &amp;quot;Courier New&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;span style=&quot;color: rgb(166, 226, 46); text-decoration-line: underline;&quot;&gt;TokenServiceImpl&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="290" width="150" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="7" target="4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="TokenApiHandler&lt;br&gt;对外提供Restful接口&lt;br&gt;Login/Logout" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="390" y="160" width="150" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.3333333333333333;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="9" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Lgoin: User/Pass" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="10" vertex="1" connectable="0">
+                    <mxGeometry x="0.7713" y="2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="16" value="/api/v1/tokens&amp;nbsp; 模块的子路有" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="10" vertex="1" connectable="0">
+                    <mxGeometry x="0.5567" y="2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="9" value="Actor" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" parent="1" vertex="1">
+                    <mxGeometry x="760" y="30" width="30" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="&lt;div style=&quot;color: rgb(248, 248, 242); background-color: rgb(39, 40, 34); font-family: Menlo, Monaco, &amp;quot;Courier New&amp;quot;, monospace; line-height: 18px;&quot;&gt;&lt;div style=&quot;line-height: 18px;&quot;&gt;&lt;span style=&quot;color: rgb(166, 226, 46); text-decoration-line: underline;&quot;&gt;Config&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="640" y="290" width="150" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="&lt;meta charset=&quot;utf-8&quot;&gt;&lt;div style=&quot;color: rgb(248, 248, 242); background-color: rgb(39, 40, 34); font-family: Menlo, Monaco, &amp;quot;Courier New&amp;quot;, monospace; font-weight: normal; font-size: 12px; line-height: 18px;&quot;&gt;&lt;div&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot;color: #88846f;&quot;&gt;// 把程序需要对象组织起来，组装成业务程序 来处理业务逻辑&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot;color: #88846f;&quot;&gt;// User BO&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;    userServiceImpl &lt;/span&gt;&lt;span style=&quot;color: #f92672;&quot;&gt;:=&lt;/span&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt; user.&lt;/span&gt;&lt;span style=&quot;color: #a6e22e;&quot;&gt;NewUserServiceImpl&lt;/span&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;()&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot;color: #88846f;&quot;&gt;// Token BO&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;    tokenServiceImpl &lt;/span&gt;&lt;span style=&quot;color: #f92672;&quot;&gt;:=&lt;/span&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt; token.&lt;/span&gt;&lt;span style=&quot;color: #a6e22e;&quot;&gt;NewTokenServiceImpl&lt;/span&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;(userServiceImpl)&lt;/span&gt;&lt;/div&gt;&lt;br&gt;&lt;div&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;    &lt;/span&gt;&lt;span style=&quot;color: #88846f;&quot;&gt;// token 模块子路有&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;    tokenApiHandler &lt;/span&gt;&lt;span style=&quot;color: #f92672;&quot;&gt;:=&lt;/span&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt; api.&lt;/span&gt;&lt;span style=&quot;color: #a6e22e;&quot;&gt;NewTokenApiHandler&lt;/span&gt;&lt;span style=&quot;color: #f8f8f2;&quot;&gt;(tokenServiceImpl)&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="-130" y="200" width="480" height="170" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
