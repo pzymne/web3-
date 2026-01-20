@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract SimpleMerge {
+    function merge(
+        uint256[] calldata a, 
+        uint256[] calldata b
+    ) external pure returns (uint256[] memory r) {
+        r = new uint256[](a.length + b.length);
+        uint256 i;
+        uint256 j;
+        uint256 k;
+        
+        while (i < a.length && j < b.length) {
+            r[k++] = a[i] < b[j] ? a[i++] : b[j++];
+        }
+        
+        while (i < a.length) r[k++] = a[i++];
+        while (j < b.length) r[k++] = b[j++];
+    }
+}

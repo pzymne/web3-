@@ -1,0 +1,20 @@
+
+手动验证信息:
+====================
+合约地址: 0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691
+网络: Sepolia
+验证页面: https://sepolia.etherscan.io/verifyContract?a=0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691
+
+验证设置:
+1. Compiler Type: Solidity (Single file)
+2. Compiler Version: v0.8.20+commit.a1b79de6
+3. Open Source License: MIT License (MIT)
+4. Optimization: Yes, 200 runs
+
+构造函数参数:
+["SimpleToken","STK",1000000]
+
+合约页面:
+https://sepolia.etherscan.io/address/0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691
+====================
+  

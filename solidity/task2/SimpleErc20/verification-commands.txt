@@ -1,0 +1,1 @@
+npx hardhat verify --network sepolia 0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691 "SimpleToken" "STK" 1000000

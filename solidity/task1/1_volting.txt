@@ -1,0 +1,40 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract Voting {
+    // mapping 存储候选人得票数
+    mapping(string => uint256) public votes;
+    
+    // 候选人列表
+    string[] public candidates;
+    // 防止重复投票
+    mapping(address => bool) public hasVoted;
+    // 构造函数，初始化候选人
+    constructor(string[] memory _candidates) {
+        candidates = _candidates;
+    }
+    
+   // 投票函数 - 每个地址只能投票一次
+    function vote(string memory candidate) public {
+        require(!hasVoted[msg.sender], "Already voted");
+        votes[candidate] += 1;
+        hasVoted[msg.sender] = true;
+    }
+    
+    // 获取候选人得票数
+    function getVotes(string memory candidate) public view returns (uint256) {
+        return votes[candidate];
+    }
+    
+    // 重置所有候选人得票数
+    function resetVotes() public {
+        for (uint i = 0; i < candidates.length; i++) {
+            votes[candidates[i]] = 0;
+        }
+    }
+    
+    // 添加新候选人
+    function addCandidate(string memory candidate) public {
+        candidates.push(candidate);
+    }
+}

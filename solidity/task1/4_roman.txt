@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract RomanToInt {
+    function romanToInt(string calldata s) public pure returns (int256) {
+        bytes calldata b = bytes(s);
+        int256 total = 0;
+        int256 prev = 0;
+        
+        for (uint256 i = b.length; i > 0; i--) {
+            int256 val = _val(b[i-1]);
+            total += val < prev ? -val : val;
+            prev = val;
+        }
+        
+        return total;
+    }
+    
+    function _val(bytes1 c) private pure returns (int256) {
+        if (c == 0x49) return 1;      // I
+        if (c == 0x56) return 5;      // V
+        if (c == 0x58) return 10;     // X
+        if (c == 0x4c) return 50;     // L
+        if (c == 0x43) return 100;    // C
+        if (c == 0x44) return 500;    // D
+        if (c == 0x4d) return 1000;   // M
+        return 0;
+    }
+}

@@ -1,0 +1,19 @@
+{
+  "network": "sepolia",
+  "timestamp": "2026-01-19T10:14:20.055Z",
+  "contract": {
+    "name": "SimpleERC20",
+    "address": "0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691",
+    "deployer": "0xf417BA93f23B415c06C5537156DaAcaDA2bBC6dE"
+  },
+  "token": {
+    "name": "SimpleToken",
+    "symbol": "STK",
+    "decimals": 18,
+    "initialSupplyRaw": 1000000,
+    "initialSupplyFormatted": "1,000,000 STK",
+    "expectedSupply": "1000000000000000000000000",
+    "expectedSupplyFormatted": "1000000.0"
+  },
+  "verificationCommand": "npx hardhat verify --network sepolia 0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691 \"SimpleToken\" \"STK\" 1000000"
+}

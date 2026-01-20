@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-01-19T10:59:24.533Z",
+  "contractAddress": "0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691",
+  "steps": [
+    {
+      "step": "check_contract",
+      "status": "start",
+      "message": "检查合约是否存在...",
+      "timestamp": "2026-01-19T10:59:24.596Z"
+    },
+    {
+      "step": "check_contract",
+      "status": "error",
+      "message": "合约不存在或地址错误",
+      "timestamp": "2026-01-19T10:59:25.220Z"
+    },
+    {
+      "step": "run",
+      "status": "error",
+      "message": "验证过程失败: 合约不存在或地址错误",
+      "timestamp": "2026-01-19T10:59:25.220Z"
+    },
+    {
+      "step": "save_results",
+      "status": "start",
+      "message": "保存验证结果...",
+      "timestamp": "2026-01-19T10:59:25.220Z"
+    }
+  ],
+  "success": false,
+  "error": "合约不存在或地址错误",
+  "summary": {
+    "contractAddress": "0xb92f9BdE7B306a2b907802c9c21A24Cb0f147691",
+    "verificationSuccessful": false,
+    "totalSteps": 4,
+    "successfulSteps": 0,
+    "failedSteps": 2
+  }
+}
